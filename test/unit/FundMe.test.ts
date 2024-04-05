@@ -40,7 +40,6 @@ describe("Fund Me", async function () {
         })
     })
     describe("withdraw", async function () {
-        // const provider = ethers.getDefaultProvider();
         beforeEach(async () => {
             await fundMe.fund({ value: ethers.parseEther("1") });
         })

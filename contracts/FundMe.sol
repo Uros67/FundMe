@@ -25,7 +25,6 @@ contract FundMe {
 /**  @notice list of all funders*/
     address[] private s_funders;
 
-    // Could we make this constant?  /* hint: no! We should make it immutable! */
 /** 
  * @notice address of fund contributor
 */
@@ -68,17 +67,6 @@ contract FundMe {
         fund();
     }
 
-    // Explainer from: https://solidity-by-example.org/fallback/
-    // Ether is sent to contract
-    //      is msg.data empty?
-    //          /   \ 
-    //         yes  no
-    //         /     \
-    //    receive()?  fallback() 
-    //     /   \ 
-    //   yes   no
-    //  /        \
-    //receive()  fallback()
 
 /**
  * @notice function to fund- send resources 
@@ -88,7 +76,6 @@ contract FundMe {
  */
     function fund() public payable {
         require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!");
-        // require(PriceConverter.getConversionRate(msg.value) >= MINIMUM_USD, "You need to spend more ETH!");
         s_addressToAmountFunded[msg.sender] += msg.value;
         s_funders.push(msg.sender);
     }
@@ -103,12 +90,7 @@ contract FundMe {
             s_addressToAmountFunded[funder] = 0;
         }
         s_funders = new address[](0);
-        // // transfer
-        // payable(msg.sender).transfer(address(this).balance);
-        // // send
-        // bool sendSuccess = payable(msg.sender).send(address(this).balance);
-        // require(sendSuccess, "Send failed");
-        // call
+     
         (bool callSuccess, ) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Call failed");
     }
@@ -126,11 +108,6 @@ contract FundMe {
         return s_priceFeed;
     }
 
-    //     function getVersion() public view returns (uint256){
-    //     // ETH/USD price feed address of Sepolia Network.
-    //     AggregatorV3Interface priceFeed = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306);
-    //     return priceFeed.version();
-    // }
 
 }
 
